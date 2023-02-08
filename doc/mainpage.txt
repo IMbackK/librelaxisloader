@@ -1,0 +1,6 @@
+/*! \mainpage librelaxisloader manual
+
+librelaxisloader is a shared library that allows you to load data from RelaxIS3 files. This library supports only files with DatabaseFormat of "1"
+
+An API referance can be found here: \subpage API
+*/
