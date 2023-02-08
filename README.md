@@ -14,7 +14,7 @@ A PDF with API documentation can be found [here](http://uvos.xyz/kiss/librelaxis
 * git
 * c99 capable compiler (GCC, CLANG)
 * cmake 3.20 or later
-* curl 7.64 or later
+* sqlite3 3.27 or later
 * (optinal) doxygen 1.8 or later to generate the documentation
 
 ### Procedure
