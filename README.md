@@ -4,7 +4,8 @@ librelaxisloader is a shared library that allows you to load data from RelaxIS3 
 
 For questions or comments, please write to klemm@rhd-instruments.de
 
-Full API documentation can be built with the "doc" target and is also avialable [here](http://uvos.xyz/kiss/librelaxisloaderdoc)
+Full Online API documentation can be built with the "doc" target and is also avialable [here](http://uvos.xyz/kiss/librelaxisloaderdoc).
+A PDF with API documentation can be found [here](http://uvos.xyz/kiss/librelaxisloader.pdf).
 
 ## Compile/Install
 
