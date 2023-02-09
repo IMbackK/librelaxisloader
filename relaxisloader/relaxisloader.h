@@ -134,7 +134,7 @@ void rlx_close_file(struct rxfile* file);
 struct rlx_project** rlx_get_projects(struct rxfile* file, size_t* length);
 
 /**
- * @brief Loads all spectra from file
+ * @brief Loads all spectra from file in given proeject
  *
  * @param file file to load spectra from
  * @param project project to load spectra from
@@ -143,7 +143,7 @@ struct rlx_project** rlx_get_projects(struct rxfile* file, size_t* length);
 struct rlx_spectra** rlx_get_all_spectra(struct rxfile* file, const struct rlx_project* project);
 
 /**
- * @brief Loads a given spectra from file
+ * @brief Loads specra ids that are assoicated with a given project
  *
  * @param file file to load spectra from
  * @param project project to load spectra from
@@ -154,7 +154,7 @@ struct rlx_spectra** rlx_get_all_spectra(struct rxfile* file, const struct rlx_p
 int* rlx_get_spectra_ids(struct rxfile* file, const struct rlx_project* project, size_t* length);
 
 /**
- * @brief Loads a given spectra from file
+ * @brief Loads spectra with a given specra id and project from file
  *
  * @param file file to load spectra from
  * @param project project to load spectra from
@@ -164,7 +164,7 @@ int* rlx_get_spectra_ids(struct rxfile* file, const struct rlx_project* project,
 struct rlx_spectra* rlx_get_spectra(struct rxfile* file, const struct rlx_project* project, int id);
 
 /**
- * @brief Loads a given spectra from file
+ * @brief Loads the parameters for a given spectra id from file
  *
  * @param file file to load spectra from
  * @param project project to load spectra from
