@@ -41,7 +41,7 @@ set_target_properties(${PROJECT_NAME}_test PROPERTIES COMPILE_FLAGS "-Wall -O2 -
 install(TARGETS ${PROJECT_NAME}_test DESTINATION bin)
 
 configure_file(pkgconfig/librelaxisloader.pc.in pkgconfig/librelaxisloader.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/librelaxisloader.pc.in DESTINATION lib/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/librelaxisloader.pc DESTINATION lib/pkgconfig)
 
 if (DOXYGEN_FOUND)
 	set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/librelaxisloader.doxygen.in)
