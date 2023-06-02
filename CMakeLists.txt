@@ -40,6 +40,9 @@ target_include_directories(${PROJECT_NAME}_test PUBLIC ./${API_HEADERS_DIR})
 set_target_properties(${PROJECT_NAME}_test PROPERTIES COMPILE_FLAGS "-Wall -O2 -march=native -g" LINK_FLAGS "-flto")
 install(TARGETS ${PROJECT_NAME}_test DESTINATION bin)
 
+configure_file(pkgconfig/librelaxisloader.pc.in pkgconfig/librelaxisloader.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/librelaxisloader.pc.in DESTINATION lib/pkgconfig)
+
 if (DOXYGEN_FOUND)
 	set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/librelaxisloader.doxygen.in)
 	set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/doc/librelaxisloader.doxygen)

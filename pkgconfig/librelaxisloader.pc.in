@@ -1,0 +1,7 @@
+includedir=@CMAKE_INSTALL_PREFIX@/include
+
+Name: librelaxisloader
+Description: C libaray to load RelaxIS3 files
+Version: 1.0
+Libs: -L${libdir} -lrelaxisloader
+Cflags: -I${includedir}
