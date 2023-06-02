@@ -243,7 +243,7 @@ struct rlx_spectra* rlx_get_spectra(struct rxfile* file, const struct rlx_projec
 	}
 
 	if(rows < 2) {
-		file->error = -100;
+		file->error = -102;
 		sqlite3_free_table(table);
 		return NULL;
 	}
@@ -304,7 +304,7 @@ int* rlx_get_spectra_ids(struct rxfile* file, const struct rlx_project* project,
 	assert(cols == 1);
 
 	if(rows < 2) {
-		file->error = -100;
+		file->error = -101;
 		sqlite3_free_table(table);
 		return NULL;
 	}
@@ -390,6 +390,10 @@ const char* rlx_get_errnum_str(int errnum)
 		return sqlite3_errstr(errnum);
 	if(errnum == -100)
 		return "No sutch entry";
+	if(errnum == -101)
+		return "Project contains no spectra";
+	if(errnum == -102)
+		return "Tried to load non existing spectra";
 	return "Unkown error";
 }
 
