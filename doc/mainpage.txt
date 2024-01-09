@@ -2,7 +2,9 @@
 
 librelaxisloader is a shared library that allows you to load data from RelaxIS3 files. This library supports only files with a DatabaseFormat of "1"
 
-An API referance can be found here: \subpage API
+An API reference can be found here: \subpage API
+
+For instructions on how to build this library please see the \ref README
 
 ## Example usage:
 
@@ -83,5 +85,5 @@ int main(int argc, char** argv)
 @endcode
 //-----------------------------------------------------------
 
-librelaxisloader is licenced to you under the Gnu Lesser General Public License Version 3.0
+librelaxisloader is licensed to you under the Gnu Lesser General Public License Version 3.0
 */
