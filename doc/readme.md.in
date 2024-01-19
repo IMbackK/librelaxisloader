@@ -1,0 +1,3 @@
+\page README Readme
+
+\include{doc} @CMAKE_CURRENT_SOURCE_DIR@/README.md

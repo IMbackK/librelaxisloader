@@ -33,6 +33,9 @@ API for use by librelaxisloader users.
 
 struct rxfile;
 
+/**
+ * @brief This struct represents a RelaxIS "project" containing any number of spectra.
+ **/
 struct rlx_project {
 	int id; /**< Project id*/
 	char* name; /**< Name of the project */
@@ -40,29 +43,40 @@ struct rlx_project {
 };
 
 /**
- * @brief Frees a project struct
+ * @brief This frees a project struct.
  *
- * @param proj project struct to be freed, or NULL
+ * This function must always be used for every singular rlx_project struct to avoid memory leaks.
+ * It is safe to pass NULL to this function.
+ *
+ * @param proj the Project struct to be freed, or NULL.
  */
 void rlx_project_free(struct rlx_project* proj);
 
 /**
- * @brief Frees an array of project structs
+ * @brief This frees an array of project structs.
  *
- * @param proj_array array of project structs to be freed
+ * This function must always be used for array of rlx_project structs to avoid memory leaks.
+ *
+ * @param proj_array The Array of project structs to be freed.
  */
 void rlx_project_free_array(struct rlx_project** proj_array);
 
+/**
+ * @brief This struct is used to house a single impedance data point.
+ **/
 struct rlx_datapoint {
-	double im; /**< imaginary part of the measurement in Ohms*/
-	double re; /**< real part of the measurement in Ohms*/
-	double omega; /**< frequency of the measurement in rad/s*/
+	double im; /**< Imaginary part of the measurement in Ohms*/
+	double re; /**< Real part of the measurement in Ohms*/
+	double omega; /**< Frequency of the measurement in rad/s*/
 };
 
+/**
+ * @brief This struct is used to house an EIS spectra and associated meta-data.
+ **/
 struct rlx_spectra {
-	int id; /**< Spectra id, also called "file" in relaxis*/
+	int id; /**< Spectra id, also called "file" in RelaxIS*/
 
-	struct rlx_datapoint* datapoints; /**< data points of the spectrum*/
+	struct rlx_datapoint* datapoints; /**< Data points of the spectrum*/
 	size_t length; /**< Amount of data points in the spectrum*/
 
 	char* circuit; /**< RelaxIS circuit description string*/
@@ -70,21 +84,26 @@ struct rlx_spectra {
 	int project_id; /**< Id of the project this spectrum belongs to*/
 	double freq_lower_limit; /**< Lower limit of frequency range of this spectrum*/
 	double freq_upper_limit; /**< Upper limit of frequency range of this spectrum*/
-	time_t date_added;
-	time_t date_fitted;
+	time_t date_added; /**< UNIX time the spectra was added. Unfortionatly, due to a deficiency in RelaxIS, the timezone of this time is unkown and the time specified assumes the project was created in a GMT+0 timezone.*/
+	time_t date_fitted; /**< UNIX time the spectra was last fitted. Only valid if fitted is true. Unfortionatly, due to a deficiency in RelaxIS, the timezone of this time is unkown and the time specified assumes the project was last fitted in a GMT+0 timezone.*/
 };
 
 /**
- * @brief Frees a spectra struct
+ * @brief This frees a spectra struct.
  *
- * @param spectra spectra to be freed
+ * This function must always be used for every singular rlx_spectra struct to avoid memory leaks.
+ * It is safe to pass NULL to this function.
+ *
+ * @param spectra The spectra to be freed.
  */
 void rlx_spectra_free(struct rlx_spectra* spectra);
 
 /**
  * @brief Frees an array of spectra structs
  *
- * @param spectra_array array of spectra structs to be freed
+ * This function must always be used for every array of rlx_spectra structs to avoid memory leaks.
+ *
+ * @param spectra_array The array of spectra structs to be freed.
  */
 void rlx_spectra_free_array(struct rlx_spectra** spectra_array);
 
@@ -115,7 +134,7 @@ void rlx_fitparam_free_array(struct rlx_fitparam** param_array);
 /**
  * @brief Frees a project struct
  *
- * @param path the filesystem path where the file shall be opened
+ * @param path the file system path where the file shall be opened
  * @param error if an error occurs and NULL is returned, pointer to an error string is set here,
  * owned by librelaxisloader, do not free, valid only until next call to librelaxisloader
  * @return a rxfile struct or NULL if opening was unsuccessful, to be closed with rlx_close_file
@@ -127,6 +146,8 @@ void rlx_close_file(struct rxfile* file);
 /**
  * @brief Gets all the projects in a given RelaxIS file
  *
+ * If this function encounters an error it will return NULL and set an error at rlx_get_errnum.
+ *
  * @param file file to load projects from
  * @param length pointer to a size_t where the number of projects will be stored, or NULL
  * @return A NULL terminated array of project structs will be allocated here, to be freed with rlx_project_free_array, or NULL on error
@@ -136,6 +157,8 @@ struct rlx_project** rlx_get_projects(struct rxfile* file, size_t* length);
 /**
  * @brief Loads all spectra from file in given project
  *
+ * If this function encounters an error it will return NULL and set an error at rlx_get_errnum.
+ *
  * @param file file to load spectra from
  * @param project project to load spectra from
  * @return A NULL terminated array of spectra structs will be allocated here, to be freed with rlx_spectra_free_array, or NULL on error
@@ -144,6 +167,8 @@ struct rlx_spectra** rlx_get_all_spectra(struct rxfile* file, const struct rlx_p
 
 /**
  * @brief Loads spectra ids that are associated with a given project
+ *
+ * If this function encounters an error it will return NULL and set an error at rlx_get_errnum.
  *
  * @param file file to load spectra from
  * @param project project to load spectra from
@@ -156,6 +181,8 @@ int* rlx_get_spectra_ids(struct rxfile* file, const struct rlx_project* project,
 /**
  * @brief Loads spectra with a given spectra id and project from file
  *
+ * If this function encounters an error it will return NULL and set an error at rlx_get_errnum.
+ *
  * @param file file to load spectra from
  * @param project project to load spectra from
  * @param id spectra id to load
@@ -165,6 +192,8 @@ struct rlx_spectra* rlx_get_spectra(struct rxfile* file, const struct rlx_projec
 
 /**
  * @brief Loads the parameters for a given spectra id from file
+ *
+ * If this function encounters an error it will return NULL and set an error at rlx_get_errnum.
  *
  * @param file file to load spectra from
  * @param project project to load spectra from
@@ -177,14 +206,14 @@ struct rlx_fitparam** rlx_get_fit_parameters(struct rxfile* file, const struct r
 /**
  * @brief Returns the last error returned on a file operation
  *
- * @return relaxiloader error number
+ * @return relaxisloader error number
  */
 int rlx_get_errnum(const struct rxfile* file);
 
 /**
  * @brief Returns a human readable error string for a given error number
  *
- * @return Error string, owned by librelaxisloader do not free
+ * @return Error string, static lifetime, owned by librelaxisloader do not free
  */
 const char* rlx_get_errnum_str(int errnum);
 

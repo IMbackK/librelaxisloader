@@ -1,5 +1,3 @@
-[comment]: \page README Readme
-
 # librelaxisloader
 
 librelaxisloader is a shared library that allows you to load data from RelaxIS3 files. This library supports only files with a DatabaseFormat of "1"

@@ -47,6 +47,11 @@ if (DOXYGEN_FOUND)
 	set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/librelaxisloader.doxygen.in)
 	set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/doc/librelaxisloader.doxygen)
 	configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+
+	set(README_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/readme.md.in)
+	set(README_OUT ${CMAKE_CURRENT_BINARY_DIR}/doc/readme.md)
+	configure_file(${README_IN} ${README_OUT} @ONLY)
+
 	message("Doxygen build started")
 
 	add_custom_target(doc
