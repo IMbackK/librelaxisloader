@@ -84,8 +84,8 @@ struct rlx_spectra {
 	int project_id; /**< Id of the project this spectrum belongs to*/
 	double freq_lower_limit; /**< Lower limit of frequency range of this spectrum*/
 	double freq_upper_limit; /**< Upper limit of frequency range of this spectrum*/
-	time_t date_added; /**< UNIX time the spectra was added. Unfortionatly, due to a deficiency in RelaxIS, the timezone of this time is unkown and the time specified assumes the project was created in a GMT+0 timezone.*/
-	time_t date_fitted; /**< UNIX time the spectra was last fitted. Only valid if fitted is true. Unfortionatly, due to a deficiency in RelaxIS, the timezone of this time is unkown and the time specified assumes the project was last fitted in a GMT+0 timezone.*/
+	time_t date_added; /**< UNIX time the spectra was added. Unfortunately, due to a deficiency in RelaxIS, the timezone of this time is unkown and the time specified assumes the project was created in a GMT+0 timezone.*/
+	time_t date_fitted; /**< UNIX time the spectra was last fitted. Only valid if fitted is true. Unfortunately, due to a deficiency in RelaxIS, the timezone of this time is unkown and the time specified assumes the project was last fitted in a GMT+0 timezone.*/
 };
 
 /**
@@ -174,7 +174,7 @@ struct rlx_spectra** rlx_get_all_spectra(struct rxfile* file, const struct rlx_p
  * @param project project to load spectra from
  * @param id spectra id for which to load parameters
  * @param length pointer to size_t where the number of ids will be stored or NULL
- * @return A NULL terminated array of fitparam structs will be allocated here, to be freed with rlx_fitparam_free_array, or NULL on error
+ * @return A a newly allocated array of integers with the ids, to be freed with free(), or NULL on error
  */
 int* rlx_get_spectra_ids(struct rxfile* file, const struct rlx_project* project, size_t* length);
 
@@ -199,7 +199,7 @@ struct rlx_spectra* rlx_get_spectra(struct rxfile* file, const struct rlx_projec
  * @param project project to load spectra from
  * @param id spectra id for which to load parameters
  * @param length a pointer to a size_t where the number of parameters will be stored, or NULL
- * @return A NULL terminated array of firearm structs will be allocated here, to be freed with rlx_fitparam_free_array, or NULL on error
+ * @return A NULL terminated array of rlx_fitparam structs will be allocated here, to be freed with rlx_fitparam_free_array, or NULL on error
  */
 struct rlx_fitparam** rlx_get_fit_parameters(struct rxfile* file, const struct rlx_project* project, int id, size_t *length);
 

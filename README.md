@@ -31,4 +31,4 @@ In a console do:
 
 ### Linking
 
-it is best to link to this library with the help of [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/) as this provides platform a agnostic to query for paths and flags. Almost certenly, pkg-config is already integrated into your buildsystem.
+it is best to link to this library with the help of [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/) as this provides a platform agnostic method to query for paths and flags. Almost certainly, pkg-config is already integrated into your buildsystem.
