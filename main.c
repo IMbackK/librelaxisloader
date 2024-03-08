@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
 	// Open a RelaxIS3 file and check for errors
 	const char *error;
-	struct rxfile *file = rlx_open_file(argv[1], &error);
+	struct rlxfile *file = rlx_open_file(argv[1], &error);
 	if(!file) {
 		printf("Unable to open %s: %s\n", argv[1], error);
 		return 2;

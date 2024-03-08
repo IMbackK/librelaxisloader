@@ -27,7 +27,7 @@
 
 #include "utils.h"
 
-struct rxfile
+struct rlxfile
 {
 	int error;
 	sqlite3 *db;
@@ -97,9 +97,9 @@ void rlx_fitparam_free_array(struct rlx_fitparam** param)
 	free(firstparam);
 }
 
-struct rxfile* rlx_open_file(const char* path, const char** error)
+struct rlxfile* rlx_open_file(const char* path, const char** error)
 {
-	struct rxfile *file = calloc(1, sizeof(*file));
+	struct rlxfile *file = calloc(1, sizeof(*file));
 	int ret = sqlite3_open_v2(path, &file->db, SQLITE_OPEN_READONLY, NULL);
 	if(!(ret == SQLITE_OK || ret == SQLITE_DONE)) {
 		if(error)
@@ -138,13 +138,13 @@ struct rxfile* rlx_open_file(const char* path, const char** error)
 	return file;
 }
 
-void rlx_close_file(struct rxfile* file)
+void rlx_close_file(struct rlxfile* file)
 {
 	sqlite3_close(file->db);
 	free(file);
 }
 
-struct rlx_project** rlx_get_projects(struct rxfile* file, size_t* length)
+struct rlx_project** rlx_get_projects(struct rlxfile* file, size_t* length)
 {
 	char **table;
 	int rows;
@@ -182,7 +182,7 @@ struct rlx_project** rlx_get_projects(struct rxfile* file, size_t* length)
 	return projects;
 }
 
-static struct rlx_datapoint* rlx_get_datapoints(struct rxfile* file, int id, size_t *length)
+static struct rlx_datapoint* rlx_get_datapoints(struct rlxfile* file, int id, size_t *length)
 {
 	char **table;
 	int rows;
@@ -224,7 +224,7 @@ static struct rlx_datapoint* rlx_get_datapoints(struct rxfile* file, int id, siz
 	return out;
 }
 
-struct rlx_spectra* rlx_get_spectra(struct rxfile* file, const struct rlx_project* project, int id)
+struct rlx_spectra* rlx_get_spectra(struct rlxfile* file, const struct rlx_project* project, int id)
 {
 	char **table;
 	int rows;
@@ -267,7 +267,7 @@ struct rlx_spectra* rlx_get_spectra(struct rxfile* file, const struct rlx_projec
 	return out;
 }
 
-struct rlx_spectra** rlx_get_all_spectra(struct rxfile* file, const struct rlx_project* project)
+struct rlx_spectra** rlx_get_all_spectra(struct rlxfile* file, const struct rlx_project* project)
 {
 	size_t length;
 	int *ids = rlx_get_spectra_ids(file, project, &length);
@@ -285,7 +285,7 @@ struct rlx_spectra** rlx_get_all_spectra(struct rxfile* file, const struct rlx_p
 	return out;
 }
 
-int* rlx_get_spectra_ids(struct rxfile* file, const struct rlx_project* project, size_t* length)
+int* rlx_get_spectra_ids(struct rlxfile* file, const struct rlx_project* project, size_t* length)
 {
 	char **table;
 	int rows;
@@ -323,7 +323,7 @@ int* rlx_get_spectra_ids(struct rxfile* file, const struct rlx_project* project,
 	return ids;
 }
 
-struct rlx_fitparam** rlx_get_fit_parameters(struct rxfile* file, const struct rlx_project* project, int id, size_t *length)
+struct rlx_fitparam** rlx_get_fit_parameters(struct rlxfile* file, const struct rlx_project* project, int id, size_t *length)
 {
 	(void)project;
 	if(length)
@@ -377,7 +377,7 @@ struct rlx_fitparam** rlx_get_fit_parameters(struct rxfile* file, const struct r
 	return out;
 }
 
-int rlx_get_errnum(const struct rxfile* file)
+int rlx_get_errnum(const struct rlxfile* file)
 {
 	return file->error;
 }
