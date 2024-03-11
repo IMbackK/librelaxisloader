@@ -191,6 +191,32 @@ int* rlx_get_spectra_ids(struct rlxfile* file, const struct rlx_project* project
 struct rlx_spectra* rlx_get_spectra(struct rlxfile* file, const struct rlx_project* project, int id);
 
 /**
+ * @brief transforms a rlx_spectra struct into a set of newly allocated arrays, float version.
+ *
+ * If this function encounters an error it will return NULL and set an error at rlx_get_errnum.
+ *
+ * @param spectra the spectra to convert
+ * @param re an array with the real part of the spectra will be allocated here. To be freed by free().
+ * @param im an array with the imaginary part of the spectra will be allocated here. To be freed by free().
+ * @param omega an array with the omega values of the spectra will be allocated here. To be freed by free().
+ * @return 0 if successful or an error number < 0 interpertable by rlx_get_errnum_str otherwise, no allocations will be performed on error.
+ */
+int rlx_get_float_arrays(const struct rlx_spectra *spectra, float **re, float **im, float **omega);
+
+/**
+ * @brief transforms a rlx_spectra struct into a set of newly allocated arrays, double version.
+ *
+ * If this function encounters an error it will return NULL and set an error at rlx_get_errnum.
+ *
+ * @param spectra the spectra to convert
+ * @param re an array with the real part of the spectra will be allocated here. To be freed by free().
+ * @param im an array with the imaginary part of the spectra will be allocated here. To be freed by free().
+ * @param omega an array with the omega values of the spectra will be allocated here. To be freed by free().
+ * @return 0 if successful or an error number < 0 interpertable by rlx_get_errnum_str otherwise, no allocations will be performed on error.
+ */
+int rlx_get_double_arrays(const struct rlx_spectra *spectra, double **re, double **im, double **omega);
+
+/**
  * @brief Loads the parameters for a given spectra id from file
  *
  * If this function encounters an error it will return NULL and set an error at rlx_get_errnum.

@@ -323,6 +323,54 @@ int* rlx_get_spectra_ids(struct rlxfile* file, const struct rlx_project* project
 	return ids;
 }
 
+int rlx_get_float_arrays(const struct rlx_spectra *spectra, float **re, float **im, float **omega)
+{
+	*re = malloc(sizeof(float)*spectra->length);
+	if(!*re)
+		return -103;
+
+	*im = malloc(sizeof(float)*spectra->length);
+	if(!*im)
+		return -103;
+
+	*omega = malloc(sizeof(float)*spectra->length);
+	if(!*omega)
+		return -103;
+
+	for(size_t i = 0; i <spectra->length; ++i)
+	{
+		(*re)[i] = spectra->datapoints[i].re;
+		(*im)[i] = spectra->datapoints[i].im;
+		(*omega)[i] = spectra->datapoints[i].omega;
+	}
+
+	return 0;
+}
+
+int rlx_get_double_arrays(const struct rlx_spectra *spectra, double **re, double **im, double **omega)
+{
+	*re = malloc(sizeof(double)*spectra->length);
+	if(!*re)
+		return -103;
+
+	*im = malloc(sizeof(double)*spectra->length);
+	if(!*im)
+		return -103;
+
+	*omega = malloc(sizeof(double)*spectra->length);
+	if(!*omega)
+		return -103;
+
+	for(size_t i = 0; i <spectra->length; ++i)
+	{
+		(*re)[i] = spectra->datapoints[i].re;
+		(*im)[i] = spectra->datapoints[i].im;
+		(*omega)[i] = spectra->datapoints[i].omega;
+	}
+
+	return 0;
+}
+
 struct rlx_fitparam** rlx_get_fit_parameters(struct rlxfile* file, const struct rlx_project* project, int id, size_t *length)
 {
 	(void)project;
@@ -394,6 +442,8 @@ const char* rlx_get_errnum_str(int errnum)
 		return "Project contains no spectra";
 	if(errnum == -102)
 		return "Tried to load non existing spectra";
+	if(errnum == -103)
+		return "Out of memory";
 	return "Unkown error";
 }
 
