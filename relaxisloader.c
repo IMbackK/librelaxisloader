@@ -160,10 +160,19 @@ struct rlx_project** rlx_get_projects(struct rlxfile* file, size_t* length)
 		return NULL;
 	}
 	rows++;
-	assert(cols == 3);
+
+	if(cols != 3) {
+		sqlite3_free_table(table);
+		file->error = RLX_ERR_FMT;
+		return NULL;
+	}
 
 	struct rlx_project **projects = malloc(sizeof(*projects)*(rows));
-	assert(projects);
+	if(!projects) {
+		sqlite3_free_table(table);
+		file->error = RLX_ERR_OOM;
+		return NULL;
+	}
 
 	if(length)
 		*length = rows-1;
@@ -199,10 +208,14 @@ static struct rlx_datapoint* rlx_get_datapoints(struct rlxfile* file, int id, si
 			*length = 0;
 		return NULL;
 	}
-	assert(cols == 3);
 
+	if(cols != 3) {
+		file->error = RLX_ERR_FMT;
+		sqlite3_free_table(table);
+		return NULL;
+	}
 	if(rows < 2) {
-		file->error = -100;
+		file->error = RLX_ERR_NO_ENT;
 		sqlite3_free_table(table);
 		return NULL;
 	}
@@ -243,12 +256,15 @@ struct rlx_spectra* rlx_get_spectra(struct rlxfile* file, const struct rlx_proje
 	}
 
 	if(rows < 2) {
-		file->error = -102;
+		file->error = RLX_ERR_NON_EXIST_SPECTRA;
 		sqlite3_free_table(table);
 		return NULL;
 	}
-
-	assert(cols == 6);
+	if(cols != 6) {
+		file->error = RLX_ERR_FMT;
+		sqlite3_free_table(table);
+		return NULL;
+	}
 
 	struct rlx_spectra *out = malloc(sizeof(*out));
 	out->id = id;
@@ -301,10 +317,20 @@ int* rlx_get_spectra_ids(struct rlxfile* file, const struct rlx_project* project
 	}
 	++rows;
 	printf("%s: got %dx%d\n", __func__, rows, cols);
-	assert(cols == 1);
+
+	if(cols == 0) {
+		file->error = RLX_ERR_NO_ENT;
+		sqlite3_free_table(table);
+		return NULL;
+	}
+	else if(cols != 1) {
+		file->error = RLX_ERR_FMT;
+		sqlite3_free_table(table);
+		return NULL;
+	}
 
 	if(rows < 2) {
-		file->error = -101;
+		file->error = RLX_ERR_NO_ENT;
 		sqlite3_free_table(table);
 		return NULL;
 	}
@@ -327,15 +353,15 @@ int rlx_get_float_arrays(const struct rlx_spectra *spectra, float **re, float **
 {
 	*re = malloc(sizeof(float)*spectra->length);
 	if(!*re)
-		return -103;
+		return RLX_ERR_OOM;
 
 	*im = malloc(sizeof(float)*spectra->length);
 	if(!*im)
-		return -103;
+		return RLX_ERR_OOM;
 
 	*omega = malloc(sizeof(float)*spectra->length);
 	if(!*omega)
-		return -103;
+		return RLX_ERR_OOM;
 
 	for(size_t i = 0; i <spectra->length; ++i)
 	{
@@ -351,15 +377,15 @@ int rlx_get_double_arrays(const struct rlx_spectra *spectra, double **re, double
 {
 	*re = malloc(sizeof(double)*spectra->length);
 	if(!*re)
-		return -103;
+		return RLX_ERR_OOM;
 
 	*im = malloc(sizeof(double)*spectra->length);
 	if(!*im)
-		return -103;
+		return RLX_ERR_OOM;
 
 	*omega = malloc(sizeof(double)*spectra->length);
 	if(!*omega)
-		return -103;
+		return RLX_ERR_OOM;
 
 	for(size_t i = 0; i <spectra->length; ++i)
 	{
@@ -432,18 +458,20 @@ int rlx_get_errnum(const struct rlxfile* file)
 
 const char* rlx_get_errnum_str(int errnum)
 {
-	if(errnum == 0)
+	if(errnum == RLX_ERR_SUCESS)
 		return "Success";
 	if(errnum > 0)
 		return sqlite3_errstr(errnum);
-	if(errnum == -100)
+	if(errnum == RLX_ERR_NO_ENT)
 		return "No sutch entry";
-	if(errnum == -101)
+	if(errnum == RLX_ERR_NO_SPECTRA)
 		return "Project contains no spectra";
-	if(errnum == -102)
+	if(errnum == RLX_ERR_NON_EXIST_SPECTRA)
 		return "Tried to load non existing spectra";
-	if(errnum == -103)
+	if(errnum == RLX_ERR_OOM)
 		return "Out of memory";
+	if(errnum == RLX_ERR_FMT)
+		return "Relaxis file is invalid";
 	return "Unkown error";
 }
 

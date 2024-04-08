@@ -31,6 +31,15 @@ API for use by librelaxisloader users.
 * @{
 */
 
+enum {
+	RLX_ERR_SUCESS = 0,
+	RLX_ERR_NO_ENT = -100,
+	RLX_ERR_NO_SPECTRA = -101,
+	RLX_ERR_NON_EXIST_SPECTRA = -102,
+	RLX_ERR_OOM = -103,
+	RLX_ERR_FMT = -104,
+};
+
 struct rlxfile;
 
 /**
