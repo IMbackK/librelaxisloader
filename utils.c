@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include "strptime.h"
 
 char *rlx_strconcat(const char* a, const char* b)
 {

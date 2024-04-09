@@ -17,6 +17,20 @@ find_package(PkgConfig REQUIRED)
 find_package(Doxygen)
 pkg_check_modules(SQL REQUIRED sqlite3)
 
+include_directories(${PROJECT_SOURCE_DIR}/strptime/)
+
+if(WIN32)
+	message("Building on Windows")
+	file(GLOB_RECURSE ARGP_SRC ${PROJECT_SOURCE_DIR}/argp/*.*)
+	set(SRC_FILES ${SRC_FILES} ${ARGP_SRC})
+
+	set(SRC_FILES ${SRC_FILES}
+		${PROJECT_SOURCE_DIR}/strptime/strptime.c
+	)
+	set(SQL_LIBRARIES sqlite3.a)
+
+endif(WIN32)
+
 add_library(${PROJECT_NAME} SHARED ${SRC_FILES} ${API_HEADERS_C})
 target_link_libraries(${PROJECT_NAME} ${SQL_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ./${API_HEADERS_DIR} ${SQL_INCLUDE_DIRS})
@@ -32,7 +46,7 @@ install(FILES ${API_HEADERS_C} DESTINATION include/${PROJECT_NAME})
 
 link_directories(${CMAKE_CURRENT_BINARY_DIR})
 set(SRC_FILES_TEST_APP main.c)
-set(LIBS_TEST -L. -l${PROJECT_NAME})
+set(LIBS_TEST -L. ${PROJECT_NAME})
 add_executable(${PROJECT_NAME}_test ${SRC_FILES_TEST_APP})
 add_dependencies(${PROJECT_NAME}_test ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}_test ${LIBS_TEST})
