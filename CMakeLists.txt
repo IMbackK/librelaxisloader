@@ -35,6 +35,14 @@ if(WIN32)
 		${PROJECT_SOURCE_DIR}/strptime/strptime.c
 	)
 	set(SQL_LIBRARIES sqlite3.a)
+	if(NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package-win.sh ${CMAKE_CURRENT_BINARY_DIR}/package.sh @ONLY)
+		add_custom_target(package
+			COMMAND ${CMAKE_CURRENT_BINARY_DIR}/package.sh
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+			COMMENT "Createing release archive"
+			VERBATIM)
+	endif()
 else()
 endif(WIN32)
 
