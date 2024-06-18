@@ -33,11 +33,12 @@ struct rlxfile
 	sqlite3 *db;
 };
 
-/**
- * @brief Frees a project struct
- *
- * @param proj project struct to be freed, or NULL
- */
+const struct rlx_version_fixed rlx_get_version(void)
+{
+	static struct rlx_version_fixed version = {VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH};
+	return version;
+}
+
 void rlx_project_free(struct rlx_project* proj)
 {
 	if(!proj)

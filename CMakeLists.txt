@@ -7,6 +7,13 @@ set(SRC_FILES
 	utils.c
 )
 
+set(CMAKE_PROJECT_VERSION_MAJOR 1)
+set(CMAKE_PROJECT_VERSION_MINOR 1)
+set(CMAKE_PROJECT_VERSION_PATCH 4)
+add_compile_definitions(VERSION_MAJOR=${CMAKE_PROJECT_VERSION_MAJOR})
+add_compile_definitions(VERSION_MINOR=${CMAKE_PROJECT_VERSION_MINOR})
+add_compile_definitions(VERSION_PATCH=${CMAKE_PROJECT_VERSION_PATCH})
+
 set(API_HEADERS_DIR relaxisloader/)
 
 set(API_HEADERS_C
@@ -28,10 +35,12 @@ if(WIN32)
 		${PROJECT_SOURCE_DIR}/strptime/strptime.c
 	)
 	set(SQL_LIBRARIES sqlite3.a)
-
+else()
 endif(WIN32)
 
-add_library(${PROJECT_NAME} SHARED ${SRC_FILES} ${API_HEADERS_C})
+set(LIBTYPE SHARED)
+
+add_library(${PROJECT_NAME} ${LIBTYPE} ${SRC_FILES} ${API_HEADERS_C})
 target_link_libraries(${PROJECT_NAME} ${SQL_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ./${API_HEADERS_DIR} ${SQL_INCLUDE_DIRS})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -O2 -march=native -g" LINK_FLAGS "-flto -pthread")

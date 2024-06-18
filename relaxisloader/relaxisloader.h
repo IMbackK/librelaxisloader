@@ -40,6 +40,22 @@ enum {
 	RLX_ERR_FMT = -104,
 };
 
+struct rlx_version_fixed {
+	int major;
+	int minor;
+	int patch;
+};
+
+/**
+ * @brief Gets the version of librelaxisloader
+ *
+ * This function must always be used for every singular rlx_project struct to avoid memory leaks.
+ * It is safe to pass NULL to this function.
+ *
+ * @return a rlx_version_fixed struct with the version, owned by librelaxisloader do not free.
+ */
+const struct rlx_version_fixed rlx_get_version(void);
+
 struct rlxfile;
 
 /**
