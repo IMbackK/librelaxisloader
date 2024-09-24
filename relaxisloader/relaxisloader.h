@@ -95,14 +95,47 @@ struct rlx_datapoint {
 	double omega; /**< Frequency of the measurement in rad/s*/
 };
 
+enum rlx_field_type
+{
+	RLX_FIELD_TYPE_STR,
+	RLX_FIELD_TYPE_DOUBLE
+};
+
+struct rlx_metadata {
+	char *key;
+	char *str;
+	double value;
+	enum rlx_field_type type;
+};
+
+/**
+ * @brief Allocates a metadata struct
+ *.
+ * @param key the key of the metadata value.
+ * @param str the value of the metadata value as a string.
+ * @param type the metadata type.
+ * @return a newly allocated rlx_metadata struct or NULL on oom.
+ */
+struct rlx_metadata* rlx_metadata_create(const char* key, const char* str, enum rlx_field_type type);
+
+/**
+ * @brief Frees a rlx_metadata struct
+ *
+ * @param metadata the struct to free
+ */
+void rlx_metadata_free(struct rlx_metadata* metadata);
+
 /**
  * @brief This struct is used to house an EIS spectra and associated meta-data.
  **/
 struct rlx_spectra {
 	int id; /**< Spectra id, also called "file" in RelaxIS*/
 
-	struct rlx_datapoint* datapoints; /**< Data points of the spectrum*/
+	struct rlx_datapoint* datapoints; /**<The Data points of the spectrum*/
 	size_t length; /**< Amount of data points in the spectrum*/
+
+	struct rlx_metadata* metadata; /**<The Metadata key-value pairs of the spectrum*/
+	size_t metadata_count; /**< Amount of Metadata key-value pairs associated with the spectrum*/
 
 	char* circuit; /**< RelaxIS circuit description string*/
 	bool fitted; /**< True if circuit has been fitted to spectrum*/
@@ -157,7 +190,7 @@ void rlx_fitparam_free(struct rlx_fitparam* param);
 void rlx_fitparam_free_array(struct rlx_fitparam** param_array);
 
 /**
- * @brief Frees a project struct
+ * @brief opens a project struct
  *
  * @param path the file system path where the file shall be opened
  * @param error if an error occurs and NULL is returned, pointer to an error string is set here,

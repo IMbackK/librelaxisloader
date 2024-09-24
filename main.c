@@ -65,6 +65,10 @@ int main(int argc, char** argv)
 	for(size_t i = 0; i < spectra->length; ++i) {
 		printf("%f,%f,%f\n", spectra->datapoints[i].omega, spectra->datapoints[i].re, spectra->datapoints[i].im);
 	}
+	puts("Metadata:");
+	for(size_t i = 0; i < spectra->metadata_count; ++i) {
+		printf("%s:\t%s\n", spectra->metadata[i].key, spectra->metadata[i].str);
+	}
 
 	size_t paramCount;
 	// Grab the parameters for the first spectrum

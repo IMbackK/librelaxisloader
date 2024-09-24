@@ -126,7 +126,7 @@ struct rlxfile* rlx_open_file(const char* path, const char** error)
 	}
 
 	int version = sqlite3_column_int(ppStmt, 0);
-	if(version != 1) {
+	if(version != 1 && version != 2) {
 		if(error)
 			*error = "Unsupported file version";
 		return NULL;
@@ -238,6 +238,42 @@ static struct rlx_datapoint* rlx_get_datapoints(struct rlxfile* file, int id, si
 	return out;
 }
 
+static struct rlx_metadata* rlx_get_metadata(struct rlxfile* file, int id, size_t *length)
+{
+	char **table;
+	int rows;
+	int cols;
+	char *error;
+	char *req = rlx_alloc_printf("SELECT name,value FROM FileInformation WHERE file_id=%d", id);
+	int ret = sqlite3_get_table(file->db, req, &table, &rows, &cols, &error);
+	free(req);
+	++rows;
+	if(ret != SQLITE_OK) {
+		file->error = ret;
+		free(error);
+		return NULL;
+	}
+
+	if(cols != 2) {
+		file->error = RLX_ERR_FMT;
+		sqlite3_free_table(table);
+		return NULL;
+	}
+
+	if(length)
+		*length = rows-1;
+	struct rlx_metadata *out = malloc(sizeof(*out)*(rows-1));
+
+	for(int i = 1; i < rows; ++i) {
+		out[i-1].key = rlx_strdup(table[i*cols]);
+		out[i-1].str = rlx_strdup(table[i*cols+1]);
+		int ret = sscanf(table[i*cols+1], "%lf", &out[i-1].value);
+		out[i-1].type = ret == 1 ? RLX_FIELD_TYPE_DOUBLE : RLX_FIELD_TYPE_STR;
+	}
+	sqlite3_free_table(table);
+	return out;
+}
+
 struct rlx_spectra* rlx_get_spectra(struct rlxfile* file, const struct rlx_project* project, int id)
 {
 	char **table;
@@ -278,9 +314,10 @@ struct rlx_spectra* rlx_get_spectra(struct rlxfile* file, const struct rlx_proje
 	assert(ret == 1);
 	out->date_added  = rlx_str_to_time(table[10]);
 	out->date_fitted = rlx_str_to_time(table[11]);
+	sqlite3_free_table(table);
 
 	out->datapoints = rlx_get_datapoints(file, id, &out->length);
-	sqlite3_free_table(table);
+	out->metadata = rlx_get_metadata(file, id, &out->metadata_count);
 	return out;
 }
 
