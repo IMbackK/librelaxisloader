@@ -66,6 +66,12 @@ void rlx_spectra_free(struct rlx_spectra* specta)
 	if(specta->circuit)
 		free(specta->circuit);
 	free(specta->datapoints);
+	if(specta->metadata)
+	{
+		for(size_t i = 0; i < specta->metadata_count; ++i)
+			rlx_metadata_free(specta->metadata+i);
+		free(specta->metadata);
+	}
 	free(specta);
 }
 
@@ -96,6 +102,12 @@ void rlx_fitparam_free_array(struct rlx_fitparam** param)
 		++param;
 	}
 	free(firstparam);
+}
+
+void rlx_metadata_free(struct rlx_metadata* metadata)
+{
+	free(metadata->key);
+	free(metadata->str);
 }
 
 struct rlxfile* rlx_open_file(const char* path, const char** error)
@@ -246,6 +258,8 @@ static struct rlx_metadata* rlx_get_metadata(struct rlxfile* file, int id, size_
 	char *error;
 	char *req = rlx_alloc_printf("SELECT name,value FROM FileInformation WHERE file_id=%d", id);
 	int ret = sqlite3_get_table(file->db, req, &table, &rows, &cols, &error);
+	if(length)
+		*length = 0;
 	free(req);
 	++rows;
 	if(ret != SQLITE_OK) {
@@ -345,12 +359,14 @@ int* rlx_get_spectra_ids(struct rlxfile* file, const struct rlx_project* project
 	int rows;
 	int cols;
 	char *error;
-	int ret = sqlite3_get_table(file->db, "SELECT ID FROM Files;", &table, &rows, &cols, &error);
+	if(length)
+		*length = 0;
+	char *req = rlx_alloc_printf("SELECT ID FROM Files where project_id=%d", project->id);
+	int ret = sqlite3_get_table(file->db, req, &table, &rows, &cols, &error);
+	free(req);
 	if(ret != SQLITE_OK) {
 		file->error = ret;
 		free(error);
-		if(length)
-			*length = 0;
 		return NULL;
 	}
 	++rows;

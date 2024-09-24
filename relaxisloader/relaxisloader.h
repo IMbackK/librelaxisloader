@@ -109,17 +109,7 @@ struct rlx_metadata {
 };
 
 /**
- * @brief Allocates a metadata struct
- *.
- * @param key the key of the metadata value.
- * @param str the value of the metadata value as a string.
- * @param type the metadata type.
- * @return a newly allocated rlx_metadata struct or NULL on oom.
- */
-struct rlx_metadata* rlx_metadata_create(const char* key, const char* str, enum rlx_field_type type);
-
-/**
- * @brief Frees a rlx_metadata struct
+ * @brief Frees the content of rlx_metadata struct but not the struct itself
  *
  * @param metadata the struct to free
  */

@@ -43,49 +43,53 @@ int main(int argc, char** argv)
 		return 4;
 	}
 
-	// Get the ids of specra associated with the first project in the file
-	size_t idCount;
-	int *ids = rlx_get_spectra_ids(file, projects[0], &idCount);
-	for(int i = 0; i < idCount; ++i)
-		printf("PROJECT: %d ID: %d\n", projects[0]->id, ids[i]);
-	if(idCount < 1) {
-		printf("No spectra in project %d: %s\n", projects[0]->id, rlx_get_errnum_str(rlx_get_errnum(file)));
-		return 3;
-	}
+	for(size_t i = 0; i < projectCount; ++i)
+	{
+		printf("PROJECT %p %d\n", projects[i], projects[i]->id);
 
-	printf("%p %d\n", projects[0], projects[0]->id);
+		// Get the ids of specra associated with the first project in the file
+		size_t idCount;
+		int *ids = rlx_get_spectra_ids(file, projects[i], &idCount);
+		for(int j = 0; j < idCount; ++j)
+			printf("PROJECT: %d ID: %d\n", projects[i]->id, ids[j]);
+		if(idCount < 1) {
+			printf("No spectra in project %d: %s\n", projects[i]->id, rlx_get_errnum_str(rlx_get_errnum(file)));
+			continue;
+		}
 
-	// Grab the first spectrum
-	struct rlx_spectra* spectra = rlx_get_spectra(file, projects[0], ids[0]);
-	if(!spectra) {
-		printf("Could not load spectra for %d %d: %s\n", projects[0]->id, ids[0], rlx_get_errnum_str(rlx_get_errnum(file)));
-		return 3;
-	}
-	printf("Spectra for PROJECT: %d ID: %d\nomega, re, im\n", projects[0]->id, ids[0]);
-	for(size_t i = 0; i < spectra->length; ++i) {
-		printf("%f,%f,%f\n", spectra->datapoints[i].omega, spectra->datapoints[i].re, spectra->datapoints[i].im);
-	}
-	puts("Metadata:");
-	for(size_t i = 0; i < spectra->metadata_count; ++i) {
-		printf("%s:\t%s\n", spectra->metadata[i].key, spectra->metadata[i].str);
-	}
+		// Grab the first spectrum
+		struct rlx_spectra* spectra = rlx_get_spectra(file, projects[i], ids[0]);
+		if(!spectra) {
+			printf("Could not load spectra for project %d id %d: %s\n", projects[i]->id, ids[0], rlx_get_errnum_str(rlx_get_errnum(file)));
+			return 3;
+		}
+		printf("Spectra for PROJECT: %d ID: %d\nomega, re, im\n", projects[i]->id, ids[0]);
+		for(size_t j = 0; j < spectra->length; ++j) {
+			printf("%f,%f,%f\n", spectra->datapoints[j].omega, spectra->datapoints[j].re, spectra->datapoints[j].im);
+		}
+		puts("Metadata:");
+		for(size_t j = 0; j < spectra->metadata_count; ++j) {
+			printf("%s:\t%s\n", spectra->metadata[j].key, spectra->metadata[j].str);
+		}
 
-	size_t paramCount;
-	// Grab the parameters for the first spectrum
-	struct rlx_fitparam** params = rlx_get_fit_parameters(file, projects[0], ids[0], &paramCount);
-	if(!params) {
-		printf("Could not get parameters for project %d spectra %d: %s\n", projects[0]->id, ids[0], rlx_get_errnum_str(rlx_get_errnum(file)));
-		return 4;
-	}
-	for(size_t i = 0; i < paramCount; ++i) {
-		printf("Parameter %d: Name: %s Value: %f Error: %f\n", params[i]->p_index, params[i]->name, params[i]->value, params[i]->error);
+		size_t paramCount;
+		// Grab the parameters for the first spectrum
+		struct rlx_fitparam** params = rlx_get_fit_parameters(file, projects[i], ids[0], &paramCount);
+		if(!params) {
+			printf("Could not get parameters for project %d spectra %d: %s\n", projects[i]->id, ids[0], rlx_get_errnum_str(rlx_get_errnum(file)));
+			return 4;
+		}
+		for(size_t j = 0; j < paramCount; ++j) {
+			printf("Parameter %d: Name: %s Value: %f Error: %f\n", params[j]->p_index, params[j]->name, params[j]->value, params[j]->error);
+		}
+
+		rlx_spectra_free(spectra);
+		rlx_fitparam_free_array(params);
+		free(ids);
 	}
 
 	// Free aquired structs
 	rlx_project_free_array(projects);
-	rlx_spectra_free(spectra);
-	rlx_fitparam_free_array(params);
-	free(ids);
 
 	// Close RelaxIS3 file
 	rlx_close_file(file);
