@@ -428,8 +428,11 @@ struct rlx_spectra** rlx_get_all_spectra(struct rlxfile* file, const struct rlx_
 		return NULL;
 
 	struct rlx_spectra **out = malloc(sizeof(*out)*(length+1));
+	size_t index = 0;
 	for(size_t i = 0; i < length; ++i) {
-		out[i] = rlx_get_spectra(file, project, i);
+		out[index] = rlx_get_spectra(file, project, i);
+		if(out[index])
+			++index;
 	}
 	out[length] = NULL;
 
