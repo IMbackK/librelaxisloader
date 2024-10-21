@@ -250,6 +250,90 @@ static struct rlx_datapoint* rlx_get_datapoints(struct rlxfile* file, int id, si
 	return out;
 }
 
+
+const char* rlx_metadata_get_key(enum rlx_metadata_field field)
+{
+	switch(field)
+	{
+		case RLX_FIELD_TEMPERATURE:
+			return "Temperature";
+		case RLX_FIELD_DC_VOLTAGE:
+			return "DCVoltage";
+		case RLX_FIELD_AC_VOLTAGE:
+			return "ACVoltage";
+		case RLX_FIELD_CURRENT:
+			return "Current";
+		case RLX_FIELD_TIME:
+			return "Time";
+		case RLX_FIELD_HARMONIC:
+			return "Harmonic";
+		case RLX_FIELD_CONCENTRATION:
+			return "Concentration";
+		case RLX_FIELD_FREE_VARIABLE_ONE:
+			return "FreeVariable";
+		case RLX_FIELD_FREE_VARIABLE_TWO:
+			return "FreeVariable2";
+		case RLX_FIELD_AREA:
+			return "Area";
+		case RLX_FIELD_THICKNESS:
+			return "Thickness";
+		case RLX_FIELD_SOC:
+			return "SOC";
+		case RLX_FIELD_SOH:
+			return "SOH";
+		case RLX_FIELD_PRESSURE:
+			return "Pressure";
+		case RLX_FIELD_UNKOWN:
+		default:
+			return "Unkown";
+	}
+}
+
+enum rlx_metadata_field rlx_metadata_get_enum(const char* key)
+{
+	if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_TEMPERATURE)) == 0)
+		return RLX_FIELD_TEMPERATURE;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_DC_VOLTAGE)) == 0)
+		return RLX_FIELD_DC_VOLTAGE;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_AC_VOLTAGE)) == 0)
+		return RLX_FIELD_AC_VOLTAGE;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_CURRENT)) == 0)
+		return RLX_FIELD_CURRENT;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_TIME)) == 0)
+		return RLX_FIELD_TIME;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_HARMONIC)) == 0)
+		return RLX_FIELD_HARMONIC;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_CONCENTRATION)) == 0)
+		return RLX_FIELD_CONCENTRATION;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_FREE_VARIABLE_ONE)) == 0)
+		return RLX_FIELD_FREE_VARIABLE_ONE;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_FREE_VARIABLE_TWO)) == 0)
+		return RLX_FIELD_FREE_VARIABLE_TWO;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_AREA)) == 0)
+		return RLX_FIELD_AREA;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_THICKNESS)) == 0)
+		return RLX_FIELD_THICKNESS;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_SOC)) == 0)
+		return RLX_FIELD_SOC;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_SOH)) == 0)
+		return RLX_FIELD_SOH;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_PRESSURE)) == 0)
+		return RLX_FIELD_PRESSURE;
+	else if(strcmp(key, rlx_metadata_get_key(RLX_FIELD_PRESSURE)) == 0)
+		return RLX_FIELD_PRESSURE;
+	return RLX_FIELD_UNKOWN;
+}
+
+struct rlx_metadata* rlx_metadata_get(struct rlx_spectra* spectra, const char* key)
+{
+	for(size_t i = 0; i < spectra->metadata_count; ++i)
+	{
+		if(strcmp(spectra->metadata[i].key, key) == 0)
+			return spectra->metadata+i;
+	}
+	return NULL;
+}
+
 static struct rlx_metadata* rlx_get_metadata(struct rlxfile* file, int id, size_t *length)
 {
 	char **table;

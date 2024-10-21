@@ -101,6 +101,25 @@ enum rlx_field_type
 	RLX_FIELD_TYPE_DOUBLE
 };
 
+enum rlx_metadata_field
+{
+	RLX_FIELD_TEMPERATURE,
+	RLX_FIELD_DC_VOLTAGE,
+	RLX_FIELD_AC_VOLTAGE,
+	RLX_FIELD_CURRENT,
+	RLX_FIELD_TIME,
+	RLX_FIELD_HARMONIC,
+	RLX_FIELD_CONCENTRATION,
+	RLX_FIELD_FREE_VARIABLE_ONE,
+	RLX_FIELD_FREE_VARIABLE_TWO,
+	RLX_FIELD_AREA,
+	RLX_FIELD_THICKNESS,
+	RLX_FIELD_SOC,
+	RLX_FIELD_SOH,
+	RLX_FIELD_PRESSURE,
+	RLX_FIELD_UNKOWN,
+};
+
 struct rlx_metadata {
 	char *key;
 	char *str;
@@ -114,6 +133,22 @@ struct rlx_metadata {
  * @param metadata the struct to free
  */
 void rlx_metadata_free(struct rlx_metadata* metadata);
+
+/**
+ * @brief Gets the key string corrisponding to a field enum.
+ *
+ * @param field the enum of the field to get the key to
+ * @return A string with the key corrisponding to the enum. Owned by librelaxisloader do not free.
+ */
+const char* rlx_metadata_get_key(enum rlx_metadata_field field);
+
+/**
+ * @brief Gets the field enum corrisponding to the key string.
+ *
+ * @param key the key string.
+ * @return the enum corrisponding to the key.
+ */
+enum rlx_metadata_field rlx_metadata_get_enum(const char* key);
 
 /**
  * @brief This struct is used to house an EIS spectra and associated meta-data.
@@ -154,6 +189,15 @@ void rlx_spectra_free(struct rlx_spectra* spectra);
  * @param spectra_array The array of spectra structs to be freed.
  */
 void rlx_spectra_free_array(struct rlx_spectra** spectra_array);
+
+/**
+ * @brief Finds a key-value pair in a spectra
+ *
+ * @param spectra the spectra.
+ * @param key the key to search for.
+ * @return A pointer to the metadatas struct corrisponding to the key or NULL if the array dose not contain the key. Owned by the spectra.
+ */
+struct rlx_metadata* rlx_metadata_get(struct rlx_spectra* spectra, const char* key);
 
 struct rlx_fitparam {
 	int spectra_id;
